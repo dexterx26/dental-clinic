@@ -4,20 +4,25 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\ConsentFormController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DentalChartController;
 use App\Http\Controllers\DentalHistoryController;
+use App\Http\Controllers\DentalLabController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ExaminationController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MedicalHistoryController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PrescriptionController;
+use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\QueueController;
 use App\Http\Controllers\RecallController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TreatmentPlanController;
 use App\Http\Controllers\TreatmentRecordController;
 use App\Http\Controllers\UserController;
@@ -83,6 +88,24 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/recalls', [RecallController::class, 'index'])->name('recalls.index');
     Route::post('/recalls', [RecallController::class, 'store'])->name('recalls.store');
     Route::patch('/recalls/{recall}/status', [RecallController::class, 'updateStatus'])->name('recalls.update-status');
+
+    // Digital Consent Forms
+    Route::resource('consent-forms', ConsentFormController::class)->only(['index', 'create', 'store', 'show']);
+
+    // Dental Laboratory Cases
+    Route::resource('lab-cases', DentalLabController::class);
+    Route::patch('/lab-cases/{labCase}/status', [DentalLabController::class, 'updateStatus'])->name('lab-cases.update-status');
+
+    // Dental Supplies Inventory & Stock Movements
+    Route::resource('inventory', InventoryController::class);
+    Route::post('/inventory/{inventory}/adjust', [InventoryController::class, 'adjustStock'])->name('inventory.adjust');
+    Route::get('/inventory/{inventory}/movements', [InventoryController::class, 'movements'])->name('inventory.movements');
+
+    // Suppliers & Purchase Orders
+    Route::resource('suppliers', SupplierController::class)->only(['index', 'store', 'update']);
+    Route::resource('purchase-orders', PurchaseOrderController::class)->only(['index', 'create', 'store', 'show']);
+    Route::patch('/purchase-orders/{purchaseOrder}/status', [PurchaseOrderController::class, 'updateStatus'])->name('purchase-orders.update-status');
+    Route::post('/purchase-orders/{purchaseOrder}/receive', [PurchaseOrderController::class, 'markReceived'])->name('purchase-orders.receive');
 
     // Reports & Analytics (Admin, Dentist, Cashier)
     Route::middleware(['role:administrator,dentist,cashier'])->group(function () {

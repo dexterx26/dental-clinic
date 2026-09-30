@@ -127,4 +127,15 @@ class Patient extends Model
     {
         return $this->hasMany(FollowUp::class, 'patient_id')->orderBy('scheduled_date', 'asc');
     }
+
+    public function labCases(): HasMany
+    {
+        return $this->hasMany(DentalLabCase::class, 'patient_id')->orderBy('created_at', 'desc');
+    }
+
+    public function consentForms(): HasMany
+    {
+        return $this->hasMany(ConsentForm::class, 'patient_id')->orderBy('signed_at', 'desc');
+    }
 }
+

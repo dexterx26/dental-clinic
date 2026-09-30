@@ -114,6 +114,12 @@
     <a href="{{ route('patients.show', ['patient' => $patient, 'tab' => 'recalls']) }}" class="tab-link {{ $currentTab === 'recalls' ? 'active' : '' }}">
         <i class="fa-solid fa-clock-rotate-left"></i> Recalls & Follow-Ups ({{ $patient->followUps->count() }})
     </a>
+    <a href="{{ route('patients.show', ['patient' => $patient, 'tab' => 'lab_cases']) }}" class="tab-link {{ $currentTab === 'lab_cases' ? 'active' : '' }}">
+        <i class="fa-solid fa-flask-vial"></i> Lab Cases ({{ $patient->labCases->count() }})
+    </a>
+    <a href="{{ route('patients.show', ['patient' => $patient, 'tab' => 'consents']) }}" class="tab-link {{ $currentTab === 'consents' ? 'active' : '' }}">
+        <i class="fa-solid fa-file-signature"></i> Consents ({{ $patient->consentForms->count() }})
+    </a>
     <a href="{{ route('patients.show', ['patient' => $patient, 'tab' => 'appointments']) }}" class="tab-link {{ $currentTab === 'appointments' ? 'active' : '' }}">
         <i class="fa-solid fa-calendar-days"></i> Appointments ({{ $patient->appointments->count() }})
     </a>
@@ -949,6 +955,132 @@
                 </tbody>
             </table>
         </div>
+    </div>
+</div>
+@endif
+
+{{-- TAB 11: LAB CASES --}}
+@if($currentTab === 'lab_cases')
+<div class="card" style="padding: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+            <h3 style="margin: 0; font-size: 18px;"><i class="fa-solid fa-flask-vial text-primary"></i> Dental Laboratory Cases</h3>
+            <p style="margin: 4px 0 0; font-size: 13px; color: var(--text-muted);">Prosthetics, crowns, and appliances manufactured for this patient</p>
+        </div>
+        <a href="{{ route('lab-cases.create', ['patient_id' => $patient->id]) }}" class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-plus"></i> Send Lab Case
+        </a>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table class="table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: var(--bg-main); text-align: left; font-size: 12px; text-transform: uppercase; color: var(--text-muted);">
+                    <th style="padding: 12px 16px;">Case #</th>
+                    <th style="padding: 12px 16px;">Appliance / Tooth</th>
+                    <th style="padding: 12px 16px;">Laboratory</th>
+                    <th style="padding: 12px 16px;">Sent / Due Date</th>
+                    <th style="padding: 12px 16px;">Status</th>
+                    <th style="padding: 12px 16px; text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($patient->labCases as $case)
+                <tr style="border-top: 1px solid var(--border);">
+                    <td style="padding: 12px 16px; font-weight: 700; font-family: monospace; color: var(--primary);">
+                        {{ $case->case_number }}
+                    </td>
+                    <td style="padding: 12px 16px;">
+                        <div style="font-weight: 600;">{{ $case->appliance_type }}</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">Tooth: {{ $case->tooth_number ?: 'N/A' }} &bull; Shade: {{ $case->shade ?: 'Standard' }}</div>
+                    </td>
+                    <td style="padding: 12px 16px; font-size: 13px;">{{ $case->lab_name }}</td>
+                    <td style="padding: 12px 16px; font-size: 13px;">
+                        <div>Sent: {{ $case->sent_date->format('M d, Y') }}</div>
+                        <div style="color: var(--text-muted); font-size: 11px;">Due: {{ $case->expected_delivery_date->format('M d, Y') }}</div>
+                    </td>
+                    <td style="padding: 12px 16px;">
+                        <span class="badge" style="background: var(--primary-light); color: var(--primary); text-transform: uppercase; font-size: 11px;">
+                            {{ $case->status }}
+                        </span>
+                    </td>
+                    <td style="padding: 12px 16px; text-align: right;">
+                        <a href="{{ route('lab-cases.show', $case) }}" class="btn btn-secondary btn-sm">View Details</a>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 30px; color: var(--text-muted);">
+                        No laboratory cases registered for this patient.
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+@endif
+
+{{-- TAB 12: DIGITAL CONSENTS --}}
+@if($currentTab === 'consents')
+<div class="card" style="padding: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+            <h3 style="margin: 0; font-size: 18px;"><i class="fa-solid fa-file-signature text-primary"></i> Digital Informed Consent Forms</h3>
+            <p style="margin: 4px 0 0; font-size: 13px; color: var(--text-muted);">Legally binding, RA 10173 compliant digitally signed consents</p>
+        </div>
+        <a href="{{ route('consent-forms.create', ['patient_id' => $patient->id]) }}" class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-plus"></i> New Consent Form
+        </a>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table class="table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: var(--bg-main); text-align: left; font-size: 12px; text-transform: uppercase; color: var(--text-muted);">
+                    <th style="padding: 12px 16px;">Consent #</th>
+                    <th style="padding: 12px 16px;">Procedure Title</th>
+                    <th style="padding: 12px 16px;">Attending Dentist</th>
+                    <th style="padding: 12px 16px;">Signed Timestamp</th>
+                    <th style="padding: 12px 16px;">Signature</th>
+                    <th style="padding: 12px 16px; text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($patient->consentForms as $form)
+                <tr style="border-top: 1px solid var(--border);">
+                    <td style="padding: 12px 16px; font-weight: 700; font-family: monospace; color: var(--primary);">
+                        {{ $form->consent_number }}
+                    </td>
+                    <td style="padding: 12px 16px; font-weight: 600;">
+                        {{ $form->title }}
+                    </td>
+                    <td style="padding: 12px 16px; font-size: 13px;">
+                        {{ $form->dentist->name ?? 'Dr. Unassigned' }}
+                    </td>
+                    <td style="padding: 12px 16px; font-size: 13px;">
+                        {{ $form->signed_at->format('M d, Y h:i A') }}
+                    </td>
+                    <td style="padding: 12px 16px;">
+                        <div style="width: 60px; height: 28px; border: 1px solid var(--border); border-radius: 4px; background: #fff; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                            <img src="{{ $form->patient_signature }}" alt="Sig" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                        </div>
+                    </td>
+                    <td style="padding: 12px 16px; text-align: right;">
+                        <a href="{{ route('consent-forms.show', $form) }}" class="btn btn-secondary btn-sm">
+                            <i class="fa-solid fa-certificate"></i> View
+                        </a>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 30px; color: var(--text-muted);">
+                        No digital consent forms executed for this patient yet.
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </div>
 @endif

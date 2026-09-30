@@ -704,5 +704,8 @@ class DatabaseSeeder extends Seeder
             'ip_address' => '127.0.0.1',
             'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
         ]);
+
+        // Phase 2 Clinic Operations Seeder
+        $this->call(PhaseTwoClinicOperationsSeeder::class);
     }
 }

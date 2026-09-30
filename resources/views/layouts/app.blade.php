@@ -51,6 +51,33 @@
                     <span>Follow-Ups & Recalls</span>
                 </a>
 
+                <a href="{{ route('lab-cases.index') }}" class="nav-item {{ request()->routeIs('lab-cases.*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-flask-vial icon"></i>
+                    <span>Dental Lab Cases</span>
+                </a>
+
+                <a href="{{ route('consent-forms.index') }}" class="nav-item {{ request()->routeIs('consent-forms.*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-file-signature icon"></i>
+                    <span>Digital Consents</span>
+                </a>
+
+                <div class="nav-section-title">Inventory & Supplies</div>
+
+                <a href="{{ route('inventory.index') }}" class="nav-item {{ request()->routeIs('inventory.*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-boxes-stacked icon"></i>
+                    <span>Supply Inventory</span>
+                </a>
+
+                <a href="{{ route('purchase-orders.index') }}" class="nav-item {{ request()->routeIs('purchase-orders.*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-cart-flatbed icon"></i>
+                    <span>Purchase Orders</span>
+                </a>
+
+                <a href="{{ route('suppliers.index') }}" class="nav-item {{ request()->routeIs('suppliers.*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-truck-field icon"></i>
+                    <span>Suppliers</span>
+                </a>
+
                 <div class="nav-section-title">Finance & Billing</div>
 
                 <a href="{{ route('invoices.index') }}" class="nav-item {{ request()->routeIs('invoices.*') || request()->routeIs('payments.*') ? 'active' : '' }}">
