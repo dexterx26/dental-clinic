@@ -1,5 +1,73 @@
 @extends('layouts.app')
 
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.default.min.css" rel="stylesheet">
+<style>
+    .ts-wrapper.form-control {
+        padding: 0 !important;
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+    .ts-control {
+        background-color: #ffffff !important;
+        border: 1px solid var(--border, #e2e8f0) !important;
+        border-radius: var(--radius-sm, 6px) !important;
+        padding: 9px 12px !important;
+        min-height: 40px !important;
+        font-size: 13.5px !important;
+        color: var(--text-main, #0f172a) !important;
+        box-shadow: var(--shadow-sm, 0 1px 2px 0 rgb(0 0 0 / 0.05));
+        transition: var(--transition, all 0.2s ease);
+        display: flex;
+        align-items: center;
+    }
+    .ts-wrapper.focus .ts-control {
+        border-color: var(--primary, #0f766e) !important;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15) !important;
+        outline: none !important;
+    }
+    .ts-control input {
+        font-size: 13.5px !important;
+        color: var(--text-main, #0f172a) !important;
+    }
+    .ts-dropdown,
+    .ts-dropdown .ts-dropdown-content {
+        background-color: #ffffff !important;
+    }
+    .ts-dropdown {
+        border: 1px solid var(--border, #e2e8f0) !important;
+        border-radius: var(--radius-sm, 6px) !important;
+        box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.08)) !important;
+        z-index: 9999 !important;
+        font-size: 13.5px !important;
+        margin-top: 4px !important;
+        overflow: hidden !important;
+    }
+    .ts-dropdown .option {
+        padding: 10px 14px !important;
+        color: var(--text-main, #0f172a) !important;
+        cursor: pointer !important;
+        border-bottom: 1px solid var(--border-light, #f1f5f9);
+    }
+    .ts-dropdown .option:last-child {
+        border-bottom: none;
+    }
+    .ts-dropdown .active,
+    .ts-dropdown .option:hover {
+        background-color: var(--primary-light, #f0fdfa) !important;
+        color: var(--primary, #0f766e) !important;
+    }
+    .ts-dropdown .highlight {
+        background: rgba(15, 118, 110, 0.15) !important;
+        color: var(--primary, #0f766e) !important;
+        font-weight: 600;
+        border-radius: 2px;
+        padding: 1px 3px;
+    }
+</style>
+@endpush
+
 @section('title', 'Send New Dental Lab Case')
 
 @section('content')
@@ -21,7 +89,7 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
             <div>
                 <label class="form-label">Patient <span style="color: var(--danger);">*</span></label>
-                <select name="patient_id" class="form-control" required>
+                <select id="patient_select" name="patient_id" class="form-control" required>
                     <option value="">-- Choose Patient --</option>
                     @foreach($patients as $p)
                         <option value="{{ $p->id }}" {{ (old('patient_id', optional($selectedPatient)->id) == $p->id) ? 'selected' : '' }}>
@@ -108,3 +176,17 @@
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        new TomSelect('#patient_select', {
+            placeholder: 'Search patient by name...',
+            searchField: ['text'],
+            maxOptions: 150,
+            highlight: true,
+        });
+    });
+</script>
+@endpush
