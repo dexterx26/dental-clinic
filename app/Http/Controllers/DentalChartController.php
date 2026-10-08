@@ -79,4 +79,15 @@ class DentalChartController extends Controller
 
         return response()->json(['histories' => $histories]);
     }
+
+    public function compare(Patient $patient)
+    {
+        $patient->load([
+            'preferredDentist',
+            'dentalCharts.updatedBy',
+            'dentalChartHistories.changedBy',
+        ]);
+
+        return view('patients.odontogram_compare', compact('patient'));
+    }
 }

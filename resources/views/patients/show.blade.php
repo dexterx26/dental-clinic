@@ -2,6 +2,10 @@
 
 @section('title', $patient->full_name . ' - Dental Record')
 
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/odontogram_v2.css') }}">
+@endpush
+
 @section('content')
 <!-- Patient Master Header Card -->
 <div class="patient-header-card">
@@ -88,7 +92,13 @@
 <!-- Navigation Tabs -->
 <div class="tab-nav">
     <a href="{{ route('patients.show', ['patient' => $patient, 'tab' => 'odontogram']) }}" class="tab-link {{ $currentTab === 'odontogram' ? 'active' : '' }}">
-        <i class="fa-solid fa-tooth"></i> Interactive Odontogram
+        <i class="fa-solid fa-tooth"></i> Interactive Odontogram (v1)
+    </a>
+    <a href="{{ route('patients.show', ['patient' => $patient, 'tab' => 'odontogram_v2']) }}" class="tab-link {{ $currentTab === 'odontogram_v2' ? 'active' : '' }}">
+        <i class="fa-solid fa-teeth"></i> Odontogram v2 (Visual Teeth)
+    </a>
+    <a href="{{ route('patients.odontogram.compare', $patient) }}" class="tab-link" style="color: #0284c7; font-weight: 700; background: #f0f9ff; border: 1px solid #bae6fd;">
+        <i class="fa-solid fa-code-compare"></i> Compare v1 vs v2
     </a>
     <a href="{{ route('patients.show', ['patient' => $patient, 'tab' => 'medical']) }}" class="tab-link {{ $currentTab === 'medical' ? 'active' : '' }}">
         <i class="fa-solid fa-notes-medical"></i> Medical & Dental History
@@ -264,6 +274,24 @@
         </div>
     </div>
 </div>
+
+<!-- History Modal -->
+<div id="chart-history-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#ffffff; border-radius:12px; width:100%; max-width:600px; max-height:80vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 25px -5px rgba(0,0,0,0.2);">
+        <div style="padding:16px 20px; border-bottom:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="font-size:16px; font-weight:700;">Odontogram History Audit Log</h3>
+            <button type="button" onclick="document.getElementById('chart-history-modal').style.display='none'" style="border:none; background:transparent; font-size:18px; cursor:pointer;">&times;</button>
+        </div>
+        <div id="chart-history-list" style="padding:20px; overflow-y:auto; flex-grow:1;">
+            <!-- History items loaded via JS -->
+        </div>
+    </div>
+</div>
+@endif
+
+{{-- TAB: ODONTOGRAM V2 (REALISTIC TEETH VISUALIZATION) --}}
+@if($currentTab === 'odontogram_v2')
+@include('patients.partials.odontogram_v2_tab')
 
 <!-- History Modal -->
 <div id="chart-history-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; padding:20px;">
@@ -1087,5 +1115,6 @@
 
 @push('scripts')
 <script src="{{ asset('js/odontogram.js') }}"></script>
+<script src="{{ asset('js/odontogram_v2.js') }}"></script>
 @endpush
 @endsection

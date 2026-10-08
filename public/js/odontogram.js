@@ -196,6 +196,9 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             if (data.success) {
                 showToast(`Tooth #${getDisplayNumber(toothNumber)} (${surface}) set to ${condition}`);
+                window.dispatchEvent(new CustomEvent('dental-chart-updated', {
+                    detail: { toothNumber, surface, condition, source: 'v1' }
+                }));
             }
         })
         .catch(err => {
@@ -319,4 +322,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         });
     }
+
+    // Bidirectional sync listener from v2
+    window.addEventListener('dental-chart-updated', function (e) {
+        if (e.detail && e.detail.source !== 'v1') {
+            const { toothNumber, surface, condition } = e.detail;
+            chartData[`${toothNumber}_${surface}`] = {
+                tooth_number: toothNumber,
+                surface: surface,
+                condition: condition
+            };
+
+            const unit = container.querySelector(`.tooth-unit[data-tooth-number="${toothNumber}"]`);
+            if (unit) {
+                if (surface === 'whole') {
+                    unit.querySelectorAll('.surface-part').forEach(p => {
+                        p.setAttribute('class', `surface-part cond-${condition}`);
+                    });
+                } else {
+                    const part = unit.querySelector(`.surface-part[data-surface="${surface}"]`);
+                    if (part) {
+                        part.setAttribute('class', `surface-part cond-${condition}`);
+                    }
+                }
+            }
+        }
+    });
 });

@@ -74,6 +74,26 @@ class PhaseOneWorkflowTest extends TestCase
         ]);
     }
 
+    public function test_dentist_can_view_odontogram_v2_and_comparison_page(): void
+    {
+        $dentist = User::where('email', 'dentist@dentalclinic.com')->first();
+        $patient = Patient::first();
+
+        // 1. View Odontogram v2 tab
+        $responseV2 = $this->actingAs($dentist)->get("/patients/{$patient->id}?tab=odontogram_v2");
+        $responseV2->assertStatus(200);
+        $responseV2->assertSee('Odontogram v2');
+        $responseV2->assertSee('Realistic Anatomical Visual Dental Chart');
+        $responseV2->assertSee('Panoramic Dental Arch Anatomy Reference');
+
+        // 2. View Odontogram comparison dedicated page
+        $responseCompare = $this->actingAs($dentist)->get("/patients/{$patient->id}/odontogram-compare");
+        $responseCompare->assertStatus(200);
+        $responseCompare->assertSee('Odontogram v1 vs Odontogram v2 Comparison');
+        $responseCompare->assertSee('Geometric 5-Surface Chart');
+        $responseCompare->assertSee('Realistic Anatomical Visual Chart');
+    }
+
     public function test_can_create_examination_treatment_and_prescription(): void
     {
         $dentist = User::where('email', 'dentist@dentalclinic.com')->first();

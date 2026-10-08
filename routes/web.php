@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/patients/{patient}/dental-history', [DentalHistoryController::class, 'update'])->name('dental-history.update');
     Route::post('/patients/{patient}/dental-chart', [DentalChartController::class, 'update'])->name('dental-chart.update');
     Route::get('/patients/{patient}/dental-chart/history', [DentalChartController::class, 'history'])->name('dental-chart.history');
+    Route::get('/patients/{patient}/odontogram-compare', [DentalChartController::class, 'compare'])->name('patients.odontogram.compare');
 
     // Examinations
     Route::get('/patients/{patient}/examinations/create', [ExaminationController::class, 'create'])->name('examinations.create');
